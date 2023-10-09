@@ -4,8 +4,8 @@ export const getPersona = async (req, res) => {
     
     try{
         const result = await pool.query('select * from persona;');
-        res.json(result);
-        console.log(result[0])
+        res.json(result[0]);
+       
     }
     catch(e){
         return res.status(500).json({

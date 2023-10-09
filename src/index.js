@@ -1,6 +1,6 @@
 import app from './app.js'
-import {port} from './config.js'
+import * as config from './config.js'
 
-app.listen(port);
-console.log("Servidor escuchando en el puerto ",port)
+app.listen(config.port);
+console.log("Servidor escuchando en el puerto ",config.port)
 
