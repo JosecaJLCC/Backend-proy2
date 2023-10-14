@@ -17,11 +17,11 @@ export const getPersona = async (req, res) => {
 
 export const createPersona = async(req, res)=>{
    try {
-        const {ci, nombre, paterno, materno, fecnac, sexo}=req.body;
-        const response = await pool.query('insert into persona(ci, nombre, paterno, materno, fecnac, sexo) values(?, ?, ?, ?, ?, ?);', [ci, nombre, paterno, materno, fecnac, sexo]);
-        
+        const {ci, nombre, paterno, materno, fecnac, sexo, civil, telf, ocupacion, nacionalidad, apodo}=req.body;
+        const response = await pool.query('insert into persona(ci, nombre, paterno, materno, fecnac, sexo, civil, telf, ocupacion, nacionalidad, apodo) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', [ci, nombre, paterno, materno, fecnac, sexo, civil, telf, ocupacion, nacionalidad, apodo]);
+        console.log(response);
         res.send({
-            ci,nombre, paterno, materno, fecnac, sexo
+            ci, nombre, paterno, materno, fecnac, sexo, civil, telf, ocupacion, nacionalidad, apodo
         });
    } catch (error) {
     return res.status(500).json({

@@ -17,12 +17,14 @@ export const getUsuario = async (req, res) => {
 
 export const createUsuario = async(req, res)=>{
    try {
-        const {usuario, correo, contrasenia, foto, rol, ci}=req.body;
-        const response = await pool.query('insert into usuario (usuario, correo, contrasenia, foto, rol, ci) values(?, ?, ?, ?, ?, ?);', [usuario, correo, contrasenia, foto, rol, ci]);
-        console.log(response);
-        res.send({
-            usuario, correo, contrasenia, foto, rol, ci
-        });
+        const {zona, via, nroPuerta, ci, usuario, correo, contrasenia}=req.body;
+        let ciPropietario=ci;
+        let ciPersona=ci;
+        await pool.query('insert into domicilio (zona, via, nroPuerta, ciPropietario) values(?, ?, ?, ?);', [zona, via, nroPuerta, ciPropietario]);
+        await pool.query('insert into usuario (usuario, correo, contrasenia, foto, rol, ciPersona) values(?, ?, ?, ?, ?, ?);', [usuario, correo, contrasenia, "foto", "usuario", ciPersona])
+        console.log(response1);
+        console.log(response2);
+        
    } catch (error) {
     return res.status(500).json({
         message:"Ocurrio un error en createUsuario"
