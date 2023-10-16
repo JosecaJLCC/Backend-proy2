@@ -17,17 +17,18 @@ export const getUsuario = async (req, res) => {
 
 export const createUsuario = async(req, res)=>{
    try {
-        const {zona, via, nroPuerta, ci, usuario, correo, contrasenia}=req.body;
-        let ciPropietario=ci;
-        let ciPersona=ci;
-        await pool.query('insert into domicilio (zona, via, nroPuerta, ciPropietario) values(?, ?, ?, ?);', [zona, via, nroPuerta, ciPropietario]);
-        await pool.query('insert into usuario (usuario, correo, contrasenia, foto, rol, ciPersona) values(?, ?, ?, ?, ?, ?);', [usuario, correo, contrasenia, "foto", "usuario", ciPersona])
-        console.log(response1);
-        console.log(response2);
-        
+        const {usuario, correo, contrasenia, ciPersona}=req.body;
+        //file=req.file
+        //const foto=`http://localhost:3000/imagenes/${file.filename}`;
+        const response = await pool.query('insert into usuario(usuario, correo, contrasenia, foto, rol, ciPersona) values(?, ?, ?, ?, ?, ?);', [usuario, correo, contrasenia, "photograph", "usuario", ciPersona])
+        console.log("Usuario creado",response[0]);
+        res.send({
+            usuario, correo, ciPersona
+        });
    } catch (error) {
     return res.status(500).json({
-        message:"Ocurrio un error en createUsuario"
+        message:"Ocurrio un error en createUsuario",
+        error: error.message // Agregar el mensaje de error real
     })
    }
 }
@@ -38,13 +39,16 @@ export const login = async(req, res) => {
         const {correo, contrasenia}=req.body;
         const response =await pool.query('select correo, contrasenia from usuario where correo=? and contrasenia=?;', [correo, contrasenia])
         
-        console.log("PostLogin",response[0].length)
+        console.log("PostLogin",response[0].length);
+        res.send({
+            correo
+        })
         if(response[0].length===0) {
             return res.status(404).json({
                 message:"Usuario no encontrada"
             })
         }
-        res.json(response[0]);
+        
     } catch (error) {
         return res.status(500).json({
             message:"Ocurrio un error en getUsuariosByIdUsuario"
