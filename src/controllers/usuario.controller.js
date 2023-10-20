@@ -18,11 +18,12 @@ export const getUsuario = async (req, res) => {
 export const createUsuario = async(req, res)=>{
    try {
         const {usuario, correo, contrasenia, ciPersona}=req.body;
-        //file=req.file
-        //const foto=`http://localhost:3000/imagenes/${file.filename}`;
-        const response = await pool.query('insert into usuario(usuario, correo, contrasenia, foto, rol, ciPersona) values(?, ?, ?, ?, ?, ?);', [usuario, correo, contrasenia, "photograph", "usuario", ciPersona])
+        const file=req.file
+        const foto=`http://localhost:3000/imagenes/${file.filename}`;
+        const rol="USUARIO"
+        const response = await pool.query('insert into usuario(usuario, correo, contrasenia, foto, rol, ciPersona) values(?, ?, ?, ?, ?, ?);', [usuario, correo, contrasenia, foto, rol, ciPersona])
         console.log("Usuario creado",response[0]);
-        res.send({
+        res.status(201).json({
             usuario, correo, ciPersona
         });
    } catch (error) {
