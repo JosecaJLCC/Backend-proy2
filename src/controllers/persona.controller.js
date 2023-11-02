@@ -21,7 +21,7 @@ export const createPersona = async (req, res) => {
          const response = await pool.query('INSERT INTO persona (ci, nombre, paterno, materno, fecnac, sexo, civil, telf, ocupacion, nacionalidad, apodo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
           [ci, nombre, paterno, materno, fecnac, sexo, civil, telf, ocupacion, nacionalidad, apodo]);
          console.log("Persona Creada", response[0]);
-         res.send({
+         res.status(201).json({
             ci, nombre, paterno, materno, fecnac, sexo, civil, telf, ocupacion, nacionalidad, apodo
         });
          // res.json(response[0]); // Puedes devolver la respuesta en formato JSON si es necesario

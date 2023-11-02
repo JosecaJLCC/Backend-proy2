@@ -1,7 +1,9 @@
-import express from 'express'
+import express, { urlencoded } from 'express'
 import morgan from 'morgan';
 import cors from 'cors'
-//El nombre de persona puede ser cualquiera
+
+
+
 import personaRoutes from './routes/persona.routes.js'
 import usuarioRoutes from './routes/usuario.routes.js'
 
@@ -12,6 +14,7 @@ import { fileURLToPath } from 'url';
 
 const app = express();
 
+app.use(urlencoded({extended:false}));
 app.use(express.json());
 //middlewares
 app.use(morgan('env'));
