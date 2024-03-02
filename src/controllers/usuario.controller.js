@@ -1,7 +1,7 @@
 import { pool } from '../connection.js'
 //Para el envio de email
-import nodemailer from 'nodemailer'
-import {google} from 'googleapis'
+//import nodemailer from 'nodemailer'
+//import {google} from 'googleapis'
 //
 
 //Para los jsonwebtoken
@@ -12,6 +12,7 @@ export const getUsuario = async (req, res) => {
     
     try{
         const result = await pool.query('select idUsuario, usuario, correo, foto, rol, ciPersona from usuario;');
+                                         
         res.json(result[0]);
         
     }
@@ -25,21 +26,24 @@ export const getUsuario = async (req, res) => {
 export const createUsuario = async(req, res)=>{
    try {
         const {usuario, correo, contrasenia, ciPersona}=req.body;
+        const {zona, via, nroPuerta, ciPropietario} = req.body;
         const file=req.file
         const foto=`http://localhost:3000/imagenes/${file.filename}`;
         const rol="USUARIO"
         
-        //Para el envio de email
+        /*Para el envio de email
         
         const contentHTML = `<h1>Formulario de Registro con Nodemailer</h1>
                             <ul> usuario: ${usuario} </ul>
                             <ul> correo: ${correo} </ul>
                             <ul> usuario: ${ciPersona} </ul>
                             <p>¡Tu registro fue exitoso!</p>` 
+                         
         const CLIENT_ID="691193112547-97tvi1uvrq5lrnmtq6d3b9p8a4ss9rf2.apps.googleusercontent.com";
-        const CLIENT_SECRET="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";
+        const CLIENT_SECRET="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";
         const REDIRECT_URI="https://developers.google.com/oauthplayground";
-        const REFRESH_TOKEN="1//04hwwf0N-pzdBCgYIARAAGAQSNwF-L9Irvgz9fJ-H4KiuUV30GKbiDHUFBY71FT0szsvOlawxoZ-4rFl7JsmMY4w9aKyU64cs4BI";
+        const REFRESH_TOKEN="1//04F7vM6wZuL1ACgYIARAAGAQSNwF-L9Ir16p_FPLjFK7Oc9Ipz3Jj0HfdwRJ0xzcig1_ANZqniKsqpQ6VJHi2lR5DamwxJdU2-Wg";
+        
         const oAuth2Client = new google.auth.OAuth2(
             CLIENT_ID,
             CLIENT_SECRET,
@@ -69,15 +73,20 @@ export const createUsuario = async(req, res)=>{
             };
             transporter.sendMail(mailOptions)  
         }
-        sendmail();
+        sendmail();*/
         
         //.then(res => res.status(200).send("enviado"))
         //.catch(error => console.log(error.message));
         //
-        const response = await pool.query('insert into usuario(usuario, correo, contrasenia, foto, rol, ciPersona) values(?, ?, ?, ?, ?, ?);', [usuario, correo, contrasenia, foto, rol, ciPersona])
-        console.log("Usuario creado",response[0]);
+        const response1 = await pool.query('insert into usuario(usuario, correo, contrasenia, foto, rol, ciPersona) values(?, ?, ?, ?, ?, ?);', [usuario, correo, contrasenia, foto, rol, ciPersona])
+        //console.log("Usuario2 creado",response1[0]);
+        const response2 = await pool.query('insert into domicilio(zona, via, nroPuerta, ciPropietario) values(?, ?, ?, ?);', [zona, via, nroPuerta, ciPropietario])
+        //console.log("domicilio2 creado",response2[0]);
+        //const response3 = await pool.query('insert into contacto(nombre, apellido, telf, correoContacto, idUsuarioC) values(?, ?, ?, ?, ?);', [nombre, apellido, telf, correoContacto, idUsuarioC])
+        //console.log("contacto2 creado",response3[0]);
+        const idd = response1[0].insertId;
         res.status(201).json({
-            usuario, correo, ciPersona
+            idd
         });
    } catch (error) {
     return res.status(500).json({
@@ -138,21 +147,22 @@ export const ensureToken = (req, res, next)=>{
         
 }
 
-//
+//funciona para encontrar un ciPersona
 export const getUsuariosByIdUsuario = async(req, res) => {
     try {
+        console.log(req.params.ciPersona)
         const ciPersona=req.params.ciPersona;
         const response =await pool.query('select idUsuario, usuario, correo, foto, rol, ciPersona from usuario where ciPersona=?;', [ciPersona])
         
-        //console.log(response)
+        console.log(response)
         if(response[0].length===0) {
             return res.status(204).json({
                 message:"Usuario no encontrado"
             })
         }
-        res.status(200).json({
-            usuario, correo, ciPersona
-        });
+        
+        res.status(200).json(response[0]);
+        
     } catch (error) {
         return res.status(500).json({
             message:"Ocurrio un error en getUsuariosByIdUsuario",
